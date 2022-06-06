@@ -1,9 +1,11 @@
 const http = require("http");
+const fs = require("fs");
 
 const server = http.createServer((req, res) => {
   console.log(req.url, req.method, req.headers);
   // process.exit();
   const url = req.url;
+  const method = req.method;
   if (url === "/") {
     res.write("<html>");
     res.write("<head><title>Enter message</title></head>");
@@ -11,6 +13,12 @@ const server = http.createServer((req, res) => {
       '<body><form action="/message" method="POST"><input type="text"><button type="submit" name="message">Send</button></form></body>'
     );
     res.write("</html>");
+    return res.end();
+  }
+  if (url === "/message" && method === "POST") {
+    console.log(req);
+    fs.writeFileSync("message.txt", "Another dummy message");
+    res.writeHead(302, { Location: "/" });
     return res.end();
   }
   res.setHeader("Content-Type", "text/html");
